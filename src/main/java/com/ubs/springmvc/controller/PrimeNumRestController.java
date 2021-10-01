@@ -1,6 +1,9 @@
 package com.ubs.springmvc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,9 +28,14 @@ public class PrimeNumRestController {
         return "Welcome to RestTemplate Example.";
     }*/
  
-    @RequestMapping(value="/primes/{number}", method=RequestMethod.GET)
-    public PrimeNumPOJO primeNums(@PathVariable Integer number) {
-        return primeNumGenService.calculateAllPrimes(number);
+    @RequestMapping(value="/primes/{number}", produces=MediaType.APPLICATION_JSON_VALUE,method=RequestMethod.GET)
+    public ResponseEntity<PrimeNumPOJO> primeNums(@PathVariable Integer number) {
+    	if(null == number || number < 0) {
+    		return new ResponseEntity<PrimeNumPOJO>(HttpStatus.BAD_REQUEST);
+    	} else {
+	    	PrimeNumPOJO primeNum = primeNumGenService.calculateAllPrimes(number);
+	        return new ResponseEntity<PrimeNumPOJO>(primeNum, HttpStatus.OK);
+    	}
     }
 	
 }
